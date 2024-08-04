@@ -33,7 +33,7 @@ jobs:
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Push image to GitHub Container Registry
       run: |
-        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/electricity-price-prediction
+        IMAGE_ID=ghcr.io/${{ lower(github.repository_owner) }}/electricity-price-prediction
         VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
         docker tag electricity-price-prediction $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
