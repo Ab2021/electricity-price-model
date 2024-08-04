@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, HistGradientBoostingRegressor
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
 import xgboost as xgb
@@ -10,7 +10,7 @@ def create_model(model_type='rf', **kwargs):
     if model_type == 'rf':
         return RandomForestRegressor(**kwargs)
     elif model_type == 'gb':
-        return GradientBoostingRegressor(**kwargs)
+        return HistGradientBoostingRegressor(**kwargs)  # Changed from GradientBoostingRegressor
     elif model_type == 'xgb':
         return xgb.XGBRegressor(**kwargs)
     elif model_type == 'lgb':

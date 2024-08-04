@@ -13,25 +13,31 @@ def main(file_path='data/clean_data.csv'):
     # Train and tune multiple models
     models = []
     for model_type in ['rf', 'gb', 'xgb', 'lgb']:
-        tuned_model = tune_model(X_train, y_train, model_type=model_type)
-        models.append(tuned_model)
-        
-        train_metrics = evaluate_model(tuned_model, X_train, y_train)
-        test_metrics = evaluate_model(tuned_model, X_test, y_test)
-        
-        print(f"{model_type.upper()} Train Metrics:", train_metrics)
-        print(f"{model_type.upper()} Test Metrics:", test_metrics)
+        try:
+            tuned_model = tune_model(X_train, y_train, model_type=model_type)
+            models.append(tuned_model)
+            
+            train_metrics = evaluate_model(tuned_model, X_train, y_train)
+            test_metrics = evaluate_model(tuned_model, X_test, y_test)
+            
+            print(f"{model_type.upper()} Train Metrics:", train_metrics)
+            print(f"{model_type.upper()} Test Metrics:", test_metrics)
+        except Exception as e:
+            print(f"Error training {model_type} model: {str(e)}")
 
     # Create and evaluate ensemble model
-    ensemble = EnsembleModel(models)
-    ensemble_train_metrics = evaluate_model(ensemble, X_train, y_train)
-    ensemble_test_metrics = evaluate_model(ensemble, X_test, y_test)
-    
-    print("Ensemble Train Metrics:", ensemble_train_metrics)
-    print("Ensemble Test Metrics:", ensemble_test_metrics)
+    if models:
+        ensemble = EnsembleModel(models)
+        ensemble_train_metrics = evaluate_model(ensemble, X_train, y_train)
+        ensemble_test_metrics = evaluate_model(ensemble, X_test, y_test)
+        
+        print("Ensemble Train Metrics:", ensemble_train_metrics)
+        print("Ensemble Test Metrics:", ensemble_test_metrics)
 
-    # Save the ensemble model
-    joblib.dump(ensemble, 'best_model.joblib')
+        # Save the ensemble model
+        joblib.dump(ensemble, 'best_model.joblib')
+    else:
+        print("No models were successfully trained. Unable to create ensemble.")
 
 if __name__ == "__main__":
     main()

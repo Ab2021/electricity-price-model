@@ -17,6 +17,12 @@ def mock_data(tmp_path):
         'sales': np.random.rand(144) * 500,
         'customers': np.random.randint(100, 1000, 144)
     })
+    
+    # Introduce some NaN values to test robustness
+    data.loc[np.random.choice(data.index, 10), 'price'] = np.nan
+    data.loc[np.random.choice(data.index, 10), 'revenue'] = np.nan
+    data.loc[np.random.choice(data.index, 10), 'stateDescription'] = np.nan
+
     file_path = tmp_path / "clean_data.csv"
     data.to_csv(file_path, index=False)
     return file_path
