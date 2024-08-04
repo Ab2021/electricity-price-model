@@ -1,7 +1,9 @@
-from data_processing import load_data, preprocess_data, split_data
-from feature_engineering import engineer_features
-from model import create_model, tune_model, evaluate_model, EnsembleModel
+from src.data_processing import load_data, preprocess_data, split_data
+from src.feature_engineering import engineer_features
+from src.model import create_model, tune_model, evaluate_model, EnsembleModel
 import joblib
+
+
 
 def main():
     # Load and preprocess data
