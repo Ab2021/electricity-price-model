@@ -1,7 +1,8 @@
 # Electricity Price Prediction Project
 
 ## Overview
-This project implements a machine learning model to predict electricity prices based on historical data. It uses an ensemble of Random Forest, Gradient Boosting, XGBoost, and LightGBM models to make predictions.
+This project implements a machine learning model to predict electricity prices based on historical data.
+It uses an  RandomForestRegressor(n_estimators=100, random_state=42) model to make predictions.
 
 ## Project Structure
 ```
