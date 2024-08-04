@@ -17,7 +17,7 @@ def sample_data():
 
 def test_train_model(sample_data):
     X, y = sample_data
-    model = train_model(X, y)
+    model = train_model(X,  y)
     
     assert isinstance(model, RandomForestRegressor)
     assert hasattr(model, 'predict')
