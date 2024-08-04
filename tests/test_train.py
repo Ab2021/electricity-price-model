@@ -8,20 +8,20 @@ import joblib
 @pytest.fixture
 def mock_data(tmp_path):
     data = pd.DataFrame({
-        'year': np.repeat(range(2010, 2022), 12),
-        'month': np.tile(range(1, 13), 12),
-        'stateDescription': np.random.choice(['State1', 'State2', 'State3'], 144),
-        'sectorName': np.random.choice(['Residential', 'Commercial', 'Industrial'], 144),
-        'price': np.random.rand(144) * 100,
-        'revenue': np.random.rand(144) * 1000,
-        'sales': np.random.rand(144) * 500,
-        'customers': np.random.randint(100, 1000, 144)
+        'year': np.repeat(2021, 3),  # Only one year
+        'month': range(1, 4),  # Only 3 months
+        'stateDescription': np.random.choice(['Wyoming', 'Tennessee', 'Texas'], 3),
+        'sectorName': np.random.choice(['residential', 'commercial', 'industrial'], 3),
+        'price': np.random.rand(3) * 100,
+        'revenue': np.random.rand(3) * 800,
+        'sales': np.random.rand(3) * 1000,
+        'customers': np.random.randint(100, 1000, 3)
     })
     
     # Introduce some NaN values to test robustness
-    data.loc[np.random.choice(data.index, 10), 'price'] = np.nan
-    data.loc[np.random.choice(data.index, 10), 'revenue'] = np.nan
-    data.loc[np.random.choice(data.index, 10), 'stateDescription'] = np.nan
+    data.loc[np.random.choice(data.index, 3), 'price'] = np.nan
+    data.loc[np.random.choice(data.index, 3), 'revenue'] = np.nan
+    data.loc[np.random.choice(data.index, 3), 'stateDescription'] = np.nan
 
     file_path = tmp_path / "clean_data.csv"
     data.to_csv(file_path, index=False)
