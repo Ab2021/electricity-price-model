@@ -7,6 +7,13 @@ This project implements a machine learning model to predict electricity prices b
 ```
 electricity-price-prediction/
 │
+├── .github/
+│   └── workflows/
+│       └── docker-ci.yml
+│
+├── data/
+│   └── clean_data.csv
+│
 ├── src/
 │   ├── __init__.py
 │   ├── data_processing.py
@@ -16,18 +23,11 @@ electricity-price-prediction/
 │
 ├── tests/
 │   ├── __init__.py
-│   ├── test_data_processing.py
-│   ├── test_feature_engineering.py
-│   ├── test_model.py
 │   └── test_train.py
-│
-├── data/
-│   └── clean_data.csv
 │
 ├── Dockerfile
 ├── requirements.txt
-├── setup.py
-└── pytest.ini
+└── README.md
 ```
 
 
