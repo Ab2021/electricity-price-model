@@ -22,18 +22,18 @@ jobs:
     
     - name: Run tests in Docker container
       run: |
-        docker run --name test-container electricity-price-prediction:test pytest
+        docker run --name test-container electricity-price-prediction:test pytest --junitxml=/app/test-results.xml
     
     - name: Copy test results
       run: |
-        docker cp test-container:/app/test-results ./test-results
+        docker cp test-container:/app/test-results.xml ./test-results.xml
       if: always()
     
     - name: Upload test results
       uses: actions/upload-artifact@v2
       with:
         name: test-results
-        path: test-results
+        path: test-results.xml
       if: always()
     
     - name: Run training script
