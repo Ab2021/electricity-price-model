@@ -20,27 +20,16 @@ jobs:
         tags: electricity-price-prediction:latest
         load: true
     
-    - name: Run training script and capture metrics
+    - name: Run training script
       run: |
-        docker run --name train-container -v ${PWD}/data:/app/data electricity-price-prediction:latest | tee training_output.txt
-    
-    - name: Extract RMSE metrics
-      run: |
-        echo "Train RMSE: $(grep 'Train Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
-        echo "Test RMSE: $(grep 'Test Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
+        docker run --name train-container -v \${PWD}/data:/app/data electricity-price-prediction:latest
     
     - name: Copy trained model
       run: |
-        docker cp train-container:/app/best_model.joblib ./best_model.joblib
+        docker cp train-container:/app/electricity_price_model.joblib ./electricity_price_model.joblib
     
     - name: Upload trained model
       uses: actions/upload-artifact@v2
       with:
         name: trained-model
-        path: best_model.joblib
-    
-    - name: Upload training output
-      uses: actions/upload-artifact@v2
-      with:
-        name: training-output
-        path: training_output.txt
+        path: electricity_price_model.joblib
