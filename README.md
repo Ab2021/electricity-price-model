@@ -1,8 +1,8 @@
 
 # Electricity Price Prediction Model
 
-![Tests](https://github.com/yourusername/electricity-price-prediction/workflows/Run%20Tests/badge.svg)
-![CI](https://github.com/yourusername/electricity-price-prediction/workflows/CI/badge.svg)
+![Tests](https://github.com/Ab2021/electricity-price-prediction/workflows/Run%20Tests/badge.svg)
+![CI](https://github.com/Ab2021/electricity-price-prediction/workflows/CI/badge.svg)
 
 ## Project Overview
 
@@ -12,7 +12,7 @@ This project implements a machine learning model to predict electricity prices b
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/electricity-price-prediction.git
+   git clone https://github.com/Ab2021/electricity-price-prediction.git
    cd electricity-price-prediction
    ```
 
