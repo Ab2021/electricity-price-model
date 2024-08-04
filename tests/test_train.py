@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from src.train import main
 import os
+import joblib
 
 @pytest.fixture
 def mock_data(tmp_path):
@@ -20,7 +21,9 @@ def mock_data(tmp_path):
     data.to_csv(file_path, index=False)
     return file_path
 
-def test_main(mock_data, monkeypatch):
-    monkeypatch.chdir(os.path.dirname(mock_data))
-    main()
+def test_main(mock_data, tmp_path):
+    os.chdir(tmp_path)
+    main(mock_data)
     assert os.path.exists('best_model.joblib')
+    model = joblib.load('best_model.joblib')
+    assert hasattr(model, 'predict')

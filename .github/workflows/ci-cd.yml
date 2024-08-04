@@ -22,7 +22,7 @@ jobs:
     
     - name: Run tests in Docker container
       run: |
-        docker run --name test-container electricity-price-prediction:test pytest --junitxml=/app/test-results.xml
+        docker run --name test-container electricity-price-prediction:test
     
     - name: Copy test results
       run: |
