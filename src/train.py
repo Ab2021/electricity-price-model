@@ -1,30 +1,37 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-import logging
+from data_processing import load_data, preprocess_data, split_data
+from feature_engineering import engineer_features
+from model import create_model, tune_model, evaluate_model, EnsembleModel
 import joblib
-from data_processing import load_and_preprocess_data, split_features_target
-from model import train_model, evaluate_model
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main():
-    logging.info("Starting model training pipeline")
+    # Load and preprocess data
+    data = load_data('data/clean_data.csv')
+    data = engineer_features(data)
+    processed_data = preprocess_data(data)
+    X_train, X_test, y_train, y_test = split_data(processed_data)
+
+    # Train and tune multiple models
+    models = []
+    for model_type in ['rf', 'gb', 'xgb', 'lgb']:
+        tuned_model = tune_model(X_train, y_train, model_type=model_type)
+        models.append(tuned_model)
+        
+        train_metrics = evaluate_model(tuned_model, X_train, y_train)
+        test_metrics = evaluate_model(tuned_model, X_test, y_test)
+        
+        print(f"{model_type.upper()} Train Metrics:", train_metrics)
+        print(f"{model_type.upper()} Test Metrics:", test_metrics)
+
+    # Create and evaluate ensemble model
+    ensemble = EnsembleModel(models)
+    ensemble_train_metrics = evaluate_model(ensemble, X_train, y_train)
+    ensemble_test_metrics = evaluate_model(ensemble, X_test, y_test)
     
-    data = load_and_preprocess_data('data/clean_data.csv')
-    X, y = split_features_target(data)
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model = train_model(X_train, y_train)
-    
-    train_mse, train_rmse = evaluate_model(model, X_train, y_train)
-    test_mse, test_rmse = evaluate_model(model, X_test, y_test)
-    
-    logging.info(f"Train RMSE: {train_rmse:.4f}")
-    logging.info(f"Test RMSE: {test_rmse:.4f}")
-    
-    joblib.dump(model, 'electricity_price_model.joblib')
-    logging.info("Model saved successfully")
+    print("Ensemble Train Metrics:", ensemble_train_metrics)
+    print("Ensemble Test Metrics:", ensemble_test_metrics)
+
+    # Save the ensemble model
+    joblib.dump(ensemble, 'best_model.joblib')
 
 if __name__ == "__main__":
     main()

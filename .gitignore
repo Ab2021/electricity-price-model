@@ -1,11 +1,56 @@
+# Python
 __pycache__/
-*.pyc
-.vscode/
-*.log
-model.joblib
+*.py[cod]
+*.so
+
+# Environments
 .env
+.venv
+env/
 venv/
+ENV/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Model files
+*.joblib
+
+# Data
+data/*.csv
+
+# Logs
+*.log
+
+# OS generated files
 .DS_Store
-mlruns/
-mlflow.db
-mlflow_artifacts/
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
