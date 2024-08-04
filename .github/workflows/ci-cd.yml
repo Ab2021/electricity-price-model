@@ -22,7 +22,7 @@ jobs:
     
     - name: Run training script
       run: |
-        docker run --name train-container -v \${PWD}/data:/app/data electricity-price-prediction:latest
+        docker run --name train-container -v ${{ github.workspace }}/data:/app/data electricity-price-prediction:latest
     
     - name: Copy trained model
       run: |
