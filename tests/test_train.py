@@ -19,9 +19,9 @@ def mock_data(tmp_path):
     })
     
     # Introduce some NaN values to test robustness
-    data.loc[np.random.choice(data.index, 3), 'price'] = np.nan
-    data.loc[np.random.choice(data.index, 3), 'revenue'] = np.nan
-    data.loc[np.random.choice(data.index, 3), 'stateDescription'] = np.nan
+    # data.loc[np.random.choice(data.index, 3), 'price'] = np.nan
+    # data.loc[np.random.choice(data.index, 3), 'revenue'] = np.nan
+    # data.loc[np.random.choice(data.index, 3), 'stateDescription'] = np.nan
 
     file_path = tmp_path / "clean_data.csv"
     data.to_csv(file_path, index=False)

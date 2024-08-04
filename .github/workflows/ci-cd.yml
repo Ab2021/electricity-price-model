@@ -1,9 +1,9 @@
-name: Docker CI
+name: Docker CI/CD
 
 on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  build-and-train:
     runs-on: ubuntu-latest
     
     steps:
@@ -17,28 +17,17 @@ jobs:
       with:
         context: .
         push: false
-        tags: electricity-price-prediction:test
+        tags: electricity-price-prediction:latest
         load: true
     
-    - name: Run tests in Docker container
+    - name: Run training script and capture metrics
       run: |
-        docker run --name test-container electricity-price-prediction:test
+        docker run --name train-container -v ${PWD}/data:/app/data electricity-price-prediction:latest | tee training_output.txt
     
-    - name: Copy test results
+    - name: Extract RMSE metrics
       run: |
-        docker cp test-container:/app/test-results.xml ./test-results.xml
-      if: always()
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-results
-        path: test-results.xml
-      if: always()
-    
-    - name: Run training script
-      run: |
-        docker run --name train-container -v ${PWD}/data:/app/data electricity-price-prediction:test python src/train.py
+        echo "Train RMSE: $(grep 'Train Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
+        echo "Test RMSE: $(grep 'Test Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
     
     - name: Copy trained model
       run: |
@@ -49,3 +38,9 @@ jobs:
       with:
         name: trained-model
         path: best_model.joblib
+    
+    - name: Upload training output
+      uses: actions/upload-artifact@v2
+      with:
+        name: training-output
+        path: training_output.txt

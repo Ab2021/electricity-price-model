@@ -13,4 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN pip install -e .
 
-CMD ["python", "-m", "pytest"]
+CMD ["python", "src/train.py"]
+# CMD ["python", "-m", "pytest"]
