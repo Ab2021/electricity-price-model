@@ -17,7 +17,6 @@ electricity-price-prediction/
 ├── src/
 │   ├── __init__.py
 │   ├── data_processing.py
-│   ├── feature_engineering.py
 │   ├── model.py
 │   └── train.py
 │
@@ -101,5 +100,5 @@ The `clean_data.csv` file should contain the following columns:
 ## Model Performance
 
 The current model achieves the following performance:
-- Train MSE: 0.31
-- Test MSE: 0.73
+- Train { MSE: 0.044 , RMSE: 0.212 , R2: 0.95 }
+- Test { MSE: 0.246 , RMSE: 0.495 , R2: 0.93 }
