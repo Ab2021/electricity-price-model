@@ -35,7 +35,7 @@ electricity-price-prediction/
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/electricity-price-prediction.git
+   git clone https://github.com/Ab2021/electricity-price-prediction.git
    cd electricity-price-prediction
    ```
 
