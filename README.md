@@ -3,6 +3,7 @@
 This project implements a machine learning model to predict electricity prices based on historical data.
 
 ## Project Structure
+```
 electricity-price-prediction/
 │
 ├── .github/
@@ -30,12 +31,12 @@ electricity-price-prediction/
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
-
+```
 ## Setup and Installation
 
 1. Clone the repository:
 ```shell
-git clone https://github.com/your-username/electricity-price-prediction.git
+git clone https://github.com/Ab2021/electricity-price-prediction.git
 cd electricity-price-prediction
 ```
 2. Create a virtual environment and activate it:

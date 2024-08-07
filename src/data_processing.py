@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List, Callable
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from .utils.parallel_utils import parallel_apply
 
@@ -31,23 +31,37 @@ def load_and_preprocess_data(file_path: str) -> pd.DataFrame:
     except pd.errors.EmptyDataError:
         raise pd.errors.EmptyDataError("The CSV file is empty.")
 
+    print(f"Initial data shape: {data.shape}")
+
     data = _handle_missing_values(data)
     data = _encode_categorical_variables(data)
     data = _engineer_features(data)
-    data = data.dropna()  # Drop rows with NaN values created by lag and rolling features
+
+    # Now drop NaN values after all preprocessing steps
+    initial_shape = data.shape
+    data = data.dropna()
+    final_shape = data.shape
+
+    print(f"Shape after preprocessing: {initial_shape}")
+    print(f"Shape after dropping NaN values: {final_shape}")
+
+    if final_shape[0] == 0:
+        raise ValueError("All data was dropped during preprocessing. Please check your data and preprocessing steps.")
 
     return data
 
 def _handle_missing_values(data: pd.DataFrame) -> pd.DataFrame:
     """Handle missing values in the dataset."""
-    return data.fillna(data.mean())
+    numeric_columns = data.select_dtypes(include=[np.number]).columns
+    data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+    return data
 
 def _encode_categorical_variables(data: pd.DataFrame) -> pd.DataFrame:
     """Encode categorical variables in the dataset."""
     le = LabelEncoder()
     categorical_columns = ['stateDescription', 'sectorName']
     for col in categorical_columns:
-        data[col] = le.fit_transform(data[col])
+        data[col] = le.fit_transform(data[col].astype(str))
     return data
 
 def _engineer_features(data: pd.DataFrame) -> pd.DataFrame:
@@ -58,12 +72,17 @@ def _engineer_features(data: pd.DataFrame) -> pd.DataFrame:
         _engineer_lag_features,
         _engineer_rolling_features
     ]
-    results = parallel_apply(lambda f: f(data.copy()), feature_functions)
+    results = parallel_apply(_apply_feature_engineering, [(f, data.copy()) for f in feature_functions])
     
     for result in results:
         data = pd.concat([data, result], axis=1)
     
     return data
+
+def _apply_feature_engineering(args: Tuple[Callable, pd.DataFrame]) -> pd.DataFrame:
+    """Apply a feature engineering function to a DataFrame."""
+    func, data = args
+    return func(data)
 
 def _engineer_seasonal_features(data: pd.DataFrame) -> pd.DataFrame:
     """Engineer seasonal features."""
@@ -77,8 +96,8 @@ def _engineer_seasonal_features(data: pd.DataFrame) -> pd.DataFrame:
 def _engineer_price_features(data: pd.DataFrame) -> pd.DataFrame:
     """Engineer price-related features."""
     return pd.DataFrame({
-        'price_per_customer': data['revenue'] / data['customers'],
-        'sales_per_customer': data['sales'] / data['customers']
+        'price_per_customer': data['revenue'] / data['customers'].replace(0, np.nan),
+        'sales_per_customer': data['sales'] / data['customers'].replace(0, np.nan)
     })
 
 def _engineer_lag_features(data: pd.DataFrame) -> pd.DataFrame:
@@ -94,7 +113,7 @@ def _engineer_rolling_features(data: pd.DataFrame) -> pd.DataFrame:
     for window in [3, 6]:
         rolling_features[f'price_rolling_mean_{window}'] = (
             data.groupby(['stateDescription', 'sectorName'])['price']
-            .rolling(window=window)
+            .rolling(window=window, min_periods=1)  # Use min_periods=1 to avoid NaN for the first rows
             .mean()
             .reset_index(0, drop=True)
         )
