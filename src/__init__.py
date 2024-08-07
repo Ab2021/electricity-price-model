@@ -1,4 +1,8 @@
+"""
+Electricity Price Prediction package.
+"""
+
 from . import data_processing
-from . import feature_engineering
 from . import model
 from . import train
+from .utils import parallel_utils
