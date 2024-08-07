@@ -66,7 +66,7 @@ def hyperparameter_tuning(X_train: np.ndarray, y_train: np.ndarray, n_iter: int 
         'max_depth': [10, 20, 30, None],
         'min_samples_split': [2, 3, 5],
         'min_samples_leaf': [1, 2, 4],
-        'max_features': ['auto', 'sqrt', 'log2']
+        'max_features': ['sqrt', 'log2']
     }
 
     rf = RandomForestRegressor(random_state=42)
@@ -76,7 +76,7 @@ def hyperparameter_tuning(X_train: np.ndarray, y_train: np.ndarray, n_iter: int 
         param_distributions=param_dist,
         n_iter=n_iter,
         cv=cv,
-        verbose=1,
+        verbose=2,
         random_state=42,
         n_jobs=-1
     )
