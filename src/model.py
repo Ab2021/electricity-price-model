@@ -48,7 +48,7 @@ def evaluate_model(model: RandomForestRegressor, X: np.ndarray, y: np.ndarray) -
     r2 = r2_score(y, y_pred)
     return {'MSE': mse, 'RMSE': rmse, 'MAE': mae, 'R2': r2}
 
-def hyperparameter_tuning(X_train: np.ndarray, y_train: np.ndarray, n_iter: int = 100, cv: int = 5) -> Dict[str, Any]:
+def hyperparameter_tuning(X_train: np.ndarray, y_train: np.ndarray, n_iter: int = 50, cv: int = 5) -> Dict[str, Any]:
     """
     Perform hyperparameter tuning for the Random Forest Regressor.
 
