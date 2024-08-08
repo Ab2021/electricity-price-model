@@ -1,36 +1,22 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Dict
 
-def plot_yearly_avg_price(data):
-    yearly_avg_price = data.groupby('year')['price'].mean().reset_index()
+def plot_feature_importance(feature_importance: Dict[str, float], output_path: str = 'feature_importance.png') -> None:
+    """
+    Plot feature importance.
+
+    Args:
+        feature_importance (Dict[str, float]): Dictionary of feature names and their importance scores.
+        output_path (str, optional): Path to save the plot. Defaults to 'feature_importance.png'.
+    """
     plt.figure(figsize=(10, 6))
-    plt.plot(yearly_avg_price['year'], yearly_avg_price['price'])
-    plt.title('Year-wise Average Electricity Price')
-    plt.xlabel('Year')
-    plt.ylabel('Average Electricity Price')
-    plt.grid(True)
-    plt.savefig('yearly_avg_price.png')
-    plt.close()
-
-def plot_monthly_avg_price(data):
-    plt.figure(figsize=(12, 8))
-    monthly_avg = data.groupby(['year', 'month'])['price'].mean().reset_index()
-    for year in monthly_avg['year'].unique():
-        data_by_year = monthly_avg[monthly_avg['year'] == year]
-        plt.plot(data_by_year['month'], data_by_year['price'], label=year)
-    plt.title('Monthly Average Electricity Price for Each Year')
-    plt.xlabel('Month')
-    plt.ylabel('Average Price')
-    plt.legend(title='Year')
-    plt.grid(True)
-    plt.xticks(range(1, 13))
-    plt.savefig('monthly_avg_price.png')
-    plt.close()
-
-def plot_correlation_heatmap(data):
-    corr_matrix = data[['price', 'revenue', 'sales']].corr()
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f")
-    plt.title('Correlation Heatmap')
-    plt.savefig('correlation_heatmap.png')
+    features = list(feature_importance.keys())
+    importances = list(feature_importance.values())
+    sns.barplot(x=importances[:10], y=features[:10])
+    plt.title('Top 10 Feature Importance')
+    plt.xlabel('Importance')
+    plt.ylabel('Features')
+    plt.tight_layout()
+    plt.savefig(output_path)
     plt.close()

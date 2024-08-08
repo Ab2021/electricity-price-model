@@ -1,17 +1,17 @@
-FROM python:3.9-slim
+# Use an official Python runtime as the base image
+FROM python:3.9
 
+# Set the working directory in the container
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    libgomp1 \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-COPY requirements.txt .
+# Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-RUN pip install -e .
+# Make port 80 available to the world outside this container
+EXPOSE 80
 
-CMD ["python", "src/train.py"]
-# CMD ["python", "-m", "pytest"]
+# Run the training script when the container launches
+CMD ["python", "-m", "src.train"]

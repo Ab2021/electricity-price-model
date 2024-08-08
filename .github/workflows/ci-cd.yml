@@ -1,46 +1,55 @@
+# Name of the GitHub Actions workflow
 name: Docker CI/CD
 
+# Define when this workflow should run
+# In this case, it runs on every push and pull request
 on: [push, pull_request]
 
+# Define the jobs that make up this workflow
 jobs:
+  # Job name: build-and-train
   build-and-train:
+    # Specify the type of machine to run the job on
     runs-on: ubuntu-latest
     
+    # Define the steps for this job
     steps:
+    # Step 1: Check out the repository code
     - uses: actions/checkout@v2
     
+    # Step 2: Set up Docker Buildx
+    # This allows for more efficient Docker builds
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
     
+    # Step 3: Build the Docker image
     - name: Build Docker image
       uses: docker/build-push-action@v2
       with:
+        # Build the image from the current directory
         context: .
+        # Don't push the image to a registry
         push: false
+        # Tag the image
         tags: electricity-price-prediction:latest
+        # Load the image into Docker's local image store
         load: true
     
-    - name: Run training script and capture metrics
+    # Step 4: Run the training script inside the Docker container
+    - name: Run training script
       run: |
-        docker run --name train-container -v ${PWD}/data:/app/data electricity-price-prediction:latest | tee training_output.txt
+        # Run the container, mounting the data directory
+        docker run --name train-container -v ${{ github.workspace }}/data:/app/data electricity-price-prediction:latest
     
-    - name: Extract RMSE metrics
-      run: |
-        echo "Train RMSE: $(grep 'Train Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
-        echo "Test RMSE: $(grep 'Test Metrics' training_output.txt | grep -oP 'RMSE: \K[0-9.]+')" >> $GITHUB_STEP_SUMMARY
-    
+    # Step 5: Copy the trained model from the container to the host
     - name: Copy trained model
       run: |
-        docker cp train-container:/app/best_model.joblib ./best_model.joblib
+        docker cp train-container:/app/electricity_price_model.joblib ./electricity_price_model.joblib
     
+    # Step 6: Upload the trained model as an artifact
+    # This allows the model to be downloaded or used in subsequent workflow runs
     - name: Upload trained model
       uses: actions/upload-artifact@v2
       with:
         name: trained-model
-        path: best_model.joblib
-    
-    - name: Upload training output
-      uses: actions/upload-artifact@v2
-      with:
-        name: training-output
-        path: training_output.txt
+        path: electricity_price_model.joblib
