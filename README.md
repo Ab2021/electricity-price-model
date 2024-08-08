@@ -36,7 +36,7 @@ electricity-price-prediction/
 
 1. Clone the repository:
 ```shell
-git clone https://github.com/Ab2021/electricity-price-prediction.git
+git clone -b model_optimized --single-branch https://github.com/Ab2021/electricity-price-prediction.git
 cd electricity-price-prediction
 ```
 2. Create a virtual environment and activate it:
