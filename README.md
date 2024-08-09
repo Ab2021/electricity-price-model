@@ -24,8 +24,6 @@ electricity-price-prediction/
 │
 ├── tests/
 │   ├── init.py
-│   ├── test_data_processing.py
-│   ├── test_model.py
 │   └── test_train.py
 │
 ├── Dockerfile
