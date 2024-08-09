@@ -1,0 +1,40 @@
+graph TD
+    A[clean_data.csv] -->|Load Data| B(load_and_preprocess_data)
+    B -->|Preprocessed Data| C{split_data}
+    C -->|Training Data| D[train_model]
+    C -->|Test Data| E[evaluate_model]
+    D -->|Trained Model| F[joblib.dump]
+    F -->|Saved Model| G[electricity_price_model.joblib]
+    D -->|Trained Model| E
+    E -->|Evaluation Metrics| H[Log Results]
+    D -->|Trained Model| I[get_feature_importance]
+    I -->|Feature Importance| J[plot_feature_importance]
+    J -->|Visualization| K[feature_importance.png]
+    L[hyperparameter_tuning] -->|Best Parameters| D
+    M[parallel_cross_validate] -->|CV Scores| H
+    
+    subgraph "src/data_processing.py"
+    B
+    C
+    end
+    
+    subgraph "src/model.py"
+    D
+    E
+    L
+    end
+    
+    subgraph "src/train.py"
+    H
+    I
+    F
+    M
+    end
+    
+    subgraph "src/visualization.py"
+    J
+    end
+    
+    subgraph "src/utils/parallel_utils.py"
+    M
+    end
